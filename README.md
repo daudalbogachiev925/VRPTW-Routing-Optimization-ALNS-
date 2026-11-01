@@ -110,3 +110,44 @@ line-length = 100
 target-version = "py311"
 
 
+# 1. Установка
+python -m venv .venv && source .venv/bin/activate
+pip install -e ".[dev]"
+
+# 2. Решить один инстанс (c101 уже в репо)
+python scripts/solve.py --instance c101
+#  → вывод:
+#    === Result: c101 ===
+#      Customers:     100
+#      Vehicles:      10
+#      Distance:      828.94
+#      Feasible:      True
+#      Iterations:    30000
+#      Time:          ~45s
+#  → artifacts/c101/routes.png, artifacts/c101/convergence.png
+
+# 3. Прогнать бенчмарк по 4 инстансам + отчёт
+python scripts/benchmark.py
+#  → artifacts/benchmark.csv, artifacts/benchmark.json
+#  → для каждого: artifacts/<name>/routes.png, convergence.png
+
+# 4. Тесты
+pytest -q
+
+# 5. Поднять API
+./scripts/serve.sh
+#  → http://localhost:8000/docs
+
+# 6. Проверить эндпоинты
+curl "http://localhost:8000/health"
+curl "http://localhost:8000/instances"
+curl "http://localhost:8000/model-info"
+curl -X POST "http://localhost:8000/solve" \
+  -H "Content-Type: application/json" \
+  -d '{"instance_name":"c101","iterations":5000}'
+
+# 7. Docker
+docker compose up --build
+
+# 8. Скачать ещё инстансы (опционально)
+python scripts/download_benchmarks.py
