@@ -1,0 +1,46 @@
+alns:
+  iterations: 30000
+  segment_length: 100
+  reaction_factor: 0.1
+  score_new_best: 33
+  score_better: 9
+  score_accepted: 13
+  score_rejected: 0
+  # simulated annealing
+  sa_initial_temp: 100.0
+  sa_cooling: 0.99975
+  seed: 42
+
+operators:
+  destroy:
+    - name: random_removal
+      weight: 1.0
+      params: {max_removal_frac: 0.15, min_removal: 4, max_removal: 40}
+    - name: worst_removal
+      weight: 1.0
+      params: {max_removal_frac: 0.15, p_worst: 3.0}
+    - name: shaw_removal
+      weight: 1.0
+      params: {max_removal_frac: 0.15, p_shaw: 4.0, c_bar: 20.0}
+    - name: route_removal
+      weight: 1.0
+      params: {max_remove_routes: 2}
+  repair:
+    - name: greedy_insertion
+      weight: 1.0
+      params: {noise: 0.0}
+    - name: regret_2_insertion
+      weight: 1.0
+      params: {k: 2, noise: 0.0}
+    - name: regret_3_insertion
+      weight: 1.0
+      params: {k: 3, noise: 0.0}
+    - name: noisy_greedy
+      weight: 1.0
+      params: {noise: 0.3}
+
+benchmark:
+  instances_dir: "./data/solomon"
+  instances: ["c101", "c201", "r101", "rc101"]
+  default_iterations: 30000
+  output_dir: "./artifacts"
